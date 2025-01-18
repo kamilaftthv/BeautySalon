@@ -14,9 +14,8 @@
     
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Image Name="ClientPhoto" Width="50" Height="50" Margin="10"
-               Source="{Binding PhotoPath, Converter={StaticResource PathToImageConverter}}" Visibility="Visible"/>
-            
+            <Image Name="ClientPhoto" Width="150" Height="150" Margin="10" HorizontalAlignment="Center"
+       Loaded="ClientPhoto_Loaded"/>
             <TextBlock Text="Имя:" Margin="5"/>
             <TextBox Name="FirstNameTextBox" Width="200" Margin="5"/>
 

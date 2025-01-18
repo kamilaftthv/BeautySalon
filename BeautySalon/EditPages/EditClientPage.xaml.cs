@@ -15,7 +15,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+//using System.Windows.Shapes;
+using System.IO;
 
 namespace BeautySalon.EditPages
 {
@@ -54,11 +55,29 @@ namespace BeautySalon.EditPages
             PhoneTextBox.Text = _currentClient.Phone;
             GenderCodeTextBox.Text = _currentClient.GenderCode;
             PhotoPathTextBox.Text = _currentClient.PhotoPath;
+            DataContext = _currentClient;
         }
+        private void ClientPhoto_Loaded(object sender, RoutedEventArgs e)
+        {
+            var client = DataContext as Client;
+            if (client != null && !string.IsNullOrEmpty(client.PhotoPath))
+            {
+                string path = client.PhotoPath.Replace('\\', '/');
+                string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 
+                if (File.Exists(fullPath))
+                {
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    ClientPhoto.Source = bitmap;
+                }
+            }
+        }
         private void PhotoPathTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Обновляем изображение при изменении пути к фото
             ClientPhoto.Source = new PathToImageConverter().Convert(PhotoPathTextBox.Text, typeof(BitmapImage), null, CultureInfo.CurrentCulture) as BitmapImage;
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
